@@ -1,0 +1,1791 @@
+swagger: '2.0'
+info:
+  title: API V1
+  version: v1
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: token
+    in: header
+definitions:
+  Bookmark:
+    type: object
+    properties:
+      hotel_id:
+        type: integer
+        example: 34973
+      room_package_id:
+        type: integer
+        example: 475112
+      hotel_name:
+        type: string
+        example: Somerset Greenways Chennai
+      hotel_image:
+        type: string
+        example: 'https://az712897.vo.msecnd.net/images/full/efe5b459-71fe-4797-9b01-1194314e87e7.jpeg'
+      check_in:
+        type: string
+        example: '2017-10-19'
+      check_out:
+        type: string
+        example: '2017-10-26'
+      star_rating:
+        type: number
+        example: '5.0'
+      user_rating:
+        type: number
+        example: '5.0'
+      active:
+        type: boolean
+        example: true
+      room_name:
+        type: string
+        example: Studio Premier
+      bookmarked_price:
+        type: integer
+        example: 95
+      cancellable:
+        type: boolean
+        description: Package is cancellable
+        example: false
+      meal:
+        type: string
+        example: Room Only
+      bed:
+        type: string
+        example: 'Double/Twin, Single'
+      hotel_address:
+        type: string
+        example: 'Sathyadev Avenue Mrc Nagar Santhome 94, Chennai, India'
+      hotel_city:
+        type: string
+        example: Chennai
+      hotel_country:
+        type: string
+        example: India
+      hotel_amenities:
+        type: array
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+              example: swimmingpool
+          required:
+            - code
+      number_of_rooms:
+        type: integer
+        example: 1
+      number_of_adults:
+        type: integer
+        example: 2
+      number_of_kids:
+        type: integer
+        example: 0
+      bookmarked_at:
+        type: string
+        example: '2017-10-04T05:34:18.000Z'
+    required:
+      - hotel_id
+      - room_package_id
+      - hotel_name
+      - check_in
+      - check_out
+      - star_rating
+      - user_rating
+      - active
+      - room_name
+      - bookmarked_price
+      - cancellable
+      - meal
+      - bed
+      - hotel_address
+      - hotel_amenities
+      - number_of_rooms
+      - number_of_adults
+      - number_of_kids
+      - bookmarked_at
+  Differentiator:
+    type: object
+    properties:
+      label:
+        type: string
+        example: Visit Singapore
+      link:
+        type: string
+        example: 'http://www.visitsingapore.com'
+      image_url:
+        type: string
+        example: 'http://somecdnsomewhere.com/bucket/singapore_image.jpg'
+    required:
+      - label
+      - link
+      - image_url
+  DifferentiatorList:
+    type: array
+    items:
+      $ref: '#/definitions/Differentiator'
+  CurrencyRate:
+    type: object
+    properties:
+      to:
+        type: string
+        example: USD
+      label:
+        type: string
+        example: US Dollar
+      rate:
+        type: integer
+        example: 1
+    required:
+      - to
+      - label
+      - rate
+  CurrencyRateList:
+    type: array
+    items:
+      $ref: '#/definitions/CurrencyRate'
+  HotelSearchListingItem:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 25
+      name:
+        type: string
+        example: Somerset Greenways Chennai
+      city:
+        type: string
+        example: Chennai
+      country:
+        type: string
+        example: India
+      address:
+        type: string
+        example: Sathyadev Avenue Mrc Nagar Santhome 94
+      latitude:
+        type: number
+        example: -0.08426
+      longitude:
+        type: number
+        example: 51.52249
+      star_rating:
+        type: number
+        example: '5.0'
+      user_rating:
+        type: number
+        example: '5.0'
+      image_url:
+        type: string
+        example: 'https://az712897.vo.msecnd.net/images/full/efe5b459-71fe-4797-9b01-1194314e87e7.jpeg'
+      amenities:
+        type: array
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+              example: swimmingpool
+          required:
+            - code
+  UserBookmarks:
+    type: object
+    properties:
+      last_bookmarks_update_at:
+        type: string
+        example: '2017-10-18 19:18:04'
+      bookmarks:
+        type: array
+        items:
+          $ref: '#/definitions/Bookmark'
+    required:
+      - last_bookmarks_update_at
+      - bookmarks
+  SearchContextRoom:
+    type: object
+    properties:
+      adults:
+        type: integer
+        example: 2
+      children:
+        type: integer
+        example: 1
+      children_ages:
+        type: array
+        items:
+          type: integer
+          example: 8
+    required:
+      - adults
+      - children
+  Errors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: string
+          example: Room package has already been taken
+    required:
+      - errors
+  UserBookmarksWithErrors:
+    allOf:
+      - $ref: '#/definitions/Errors'
+      - $ref: '#/definitions/UserBookmarks'
+  LoginRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        example: john@doe.com
+      password:
+        type: string
+        example: myP@55w0rd!
+      last_differentiators_fetch_at:
+        type: string
+        description: Date of differentiators last update
+        example: '2017-10-18T19:18:04Z'
+      device:
+        $ref: '#/definitions/Device'
+    required:
+      - email
+      - password
+      - last_differentiators_fetch_at
+  LoginResponse:
+    type: object
+    properties:
+      access_token:
+        type: string
+        example: 8c188a2d8dbe2396c26f57e9c3b5bad1
+      token_type:
+        type: string
+        example: bearer
+      token_timeout:
+        type: integer
+        example: 1800
+      info:
+        $ref: '#/definitions/UserProfileResponse'
+      differentiators:
+        $ref: '#/definitions/DifferentiatorList'
+      forex:
+        $ref: '#/definitions/CurrencyRateList'
+    required:
+      - access_token
+      - token_type
+      - token_timeout
+      - info
+  PreloginRequest:
+    type: object
+    properties:
+      last_differentiators_fetch_at:
+        type: string
+        description: Date of differentiators last update
+        example: '2017-10-18T19:18:04Z'
+      device:
+        $ref: '#/definitions/Device'
+    required:
+      - last_differentiators_fetch_at
+      - device
+  PreloginResponse:
+    type: object
+    properties:
+      differentiators:
+        $ref: '#/definitions/DifferentiatorList'
+      forex:
+        $ref: '#/definitions/CurrencyRateList'
+  UserPrebookingRequest:
+    type: object
+    properties:
+      user_traveling:
+        type: boolean
+        description: Is the user also the one traveling?
+        example: true
+      first_name:
+        type: string
+        example: John
+      last_name:
+        type: string
+        example: Doe
+      mobile:
+        type: string
+        example: +1-206-555-1234
+      street_address:
+        type: string
+        example: '1234 Elm St, Suite 5A'
+      city:
+        type: string
+        example: Riverside
+      state:
+        type: string
+        example: AZ
+      postal_code:
+        type: integer
+        example: 90211
+      country_of_residence:
+        type: string
+        example: US
+      currency_id:
+        type: string
+        example: USD
+      room_package_id:
+        type: integer
+        example: 475112
+    required:
+      - user_traveling
+      - first_name
+      - last_name
+      - mobile
+      - street_address
+      - city
+      - postal_code
+      - country_of_residence
+      - currency_id
+      - room_package_id
+  UserPrebookingResponse:
+    type: object
+    properties:
+      email:
+        type: string
+        example: john@doe.com
+      first_name:
+        type: string
+        example: John
+      last_name:
+        type: string
+        example: Doe
+      date_of_birth:
+        type: string
+        example: '1980-03-24'
+      gender:
+        type: string
+        enum:
+          - male
+          - female
+          - other
+      mobile:
+        type: string
+        example: +1-206-555-1234
+      passport:
+        type: string
+        example: A12345678
+      nationality:
+        type: string
+        example: CA
+      street_address:
+        type: string
+        example: '1234 Elm St, Suite 5A'
+      city:
+        type: string
+        example: Riverside
+      state:
+        type: string
+        example: AZ
+      postal_code:
+        type: integer
+        example: 90211
+      country_of_residence:
+        type: string
+        example: US
+      currency_id:
+        type: string
+        example: USD
+      photo_url:
+        type: string
+        example: 'https://myblackbook.com/xyz/abc/123/456/789.png'
+      user_id:
+        type: integer
+        example: 659463419306
+      booking:
+        $ref: '#/definitions/HotelBooking'
+  PrebookingRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        example: john@doe.com
+      password:
+        type: string
+        example: myP@55w0rd!
+      first_name:
+        type: string
+        example: John
+      last_name:
+        type: string
+        example: Doe
+      gender:
+        type: string
+        enum:
+          - male
+          - female
+          - other
+      mobile:
+        type: string
+        example: +1-206-555-1234
+      street_address:
+        type: string
+        example: '1234 Elm St, Suite 5A'
+      city:
+        type: string
+        example: Riverside
+      state:
+        type: string
+        example: AZ
+      postal_code:
+        type: string
+        example: '90211'
+      country_of_residence:
+        type: string
+        description: alpha2 code of country of residence
+        example: US
+      currency_id:
+        type: string
+        example: USD
+      room_package_id:
+        type: integer
+        example: 475112
+      device:
+        $ref: '#/definitions/Device'
+    required:
+      - email
+      - password
+      - first_name
+      - last_name
+      - country_of_residence
+      - currency_id
+      - room_package_id
+  PrebookingResponse:
+    type: object
+    properties:
+      access_token:
+        type: string
+        example: 8c188a2d8dbe2396c26f57e9c3b5bad1
+      token_type:
+        type: string
+        example: bearer
+      token_timeout:
+        type: integer
+        example: 1800
+      info:
+        $ref: '#/definitions/UserProfileResponse'
+      booking:
+        $ref: '#/definitions/HotelBooking'
+    required:
+      - access_token
+      - token_type
+      - token_timeout
+      - info
+      - booking
+  RegisterUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        example: john@doe.com
+      password:
+        type: string
+        example: myP@55w0rd!
+      first_name:
+        type: string
+        example: John
+      last_name:
+        type: string
+        example: Doe
+      last_differentiators_fetch_at:
+        type: string
+        description: Date of differentiators last update
+        example: '2017-10-18T19:18:04Z'
+      device:
+        $ref: '#/definitions/Device'
+    required:
+      - email
+      - password
+      - first_name
+      - last_name
+      - country_of_residence
+      - last_differentiators_fetch_at
+  UpdatePasswordRequest:
+    type: object
+    properties:
+      password:
+        type: string
+        example: myP@55w0rd!
+    required:
+      - password
+  HotelBooking:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 28874
+      status:
+        type: string
+        enum:
+          - Initial
+          - Paid
+          - Booked
+      final_price:
+        type: number
+        example: 240.54
+      displayed_currency:
+        type: string
+        example: USD
+      exchange_rate:
+        type: number
+        example: 23.99
+    required:
+      - id
+      - status
+      - final_price
+      - displayed_currency
+      - exchange_rate
+  UserProfile:
+    type: object
+    properties:
+      email:
+        type: string
+        example: john@doe.com
+      first_name:
+        type: string
+        example: John
+      last_name:
+        type: string
+        example: Doe
+      date_of_birth:
+        type: string
+        example: '1980-03-24'
+      gender:
+        type: string
+        enum:
+          - male
+          - female
+          - other
+      mobile:
+        type: string
+        example: +1-206-555-1234
+      passport:
+        type: string
+        example: A12345678
+      nationality:
+        type: string
+        description: alpha2 code of country of nationality
+        example: CA
+      street_address:
+        type: string
+        example: '1234 Elm St, Suite 5A'
+      city:
+        type: string
+        example: Riverside
+      state:
+        type: string
+        example: AZ
+      postal_code:
+        type: string
+        example: '90211'
+      country_of_residence:
+        type: string
+        description: alpha2 code of country of residence
+        example: US
+      currency_id:
+        type: string
+        example: USD
+    required:
+      - email
+      - first_name
+      - last_name
+      - date_of_birth
+      - gender
+      - mobile
+      - passport
+      - nationality
+      - street_address
+      - city
+      - state
+      - postal_code
+      - country_of_residence
+  UserProfilePhotoUrl:
+    type: object
+    properties:
+      photo_url:
+        type: string
+        description: URL for profile photo
+        example: 'https://myblackbook.com/xyz/abc/123/456/789.png'
+    required:
+      - photo_url
+  UserProfileUserId:
+    type: object
+    properties:
+      user_id:
+        type: string
+        description: 12-digit numeric User ID
+        example: '659463419306'
+    required:
+      - user_id
+  UserProfileResponse:
+    allOf:
+      - $ref: '#/definitions/UserProfile'
+      - $ref: '#/definitions/UserProfilePhotoUrl'
+      - $ref: '#/definitions/UserProfileUserId'
+      - $ref: '#/definitions/UserBookmarks'
+  CreateBookmarkRequest:
+    type: object
+    properties:
+      hotel_id:
+        type: string
+        description: ID of Hotel
+        example: '21'
+      room_package_id:
+        type: string
+        description: ID of Room Package
+        example: '981'
+      last_bookmarks_update_at:
+        type: string
+        description: Date of last bookmarks update
+        example: '2017-10-18T19:18:04Z'
+  RoomPackageGroup:
+    type: object
+    properties:
+      name:
+        type: string
+        example: Deluxe Grand
+      room_packages:
+        type: array
+        items:
+          $ref: '#/definitions/RoomPackage'
+    required:
+      - name
+      - room_packages
+  RoomPackage:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 56213
+      cancellable:
+        type: boolean
+        description: Package is cancellable
+        example: false
+      price:
+        type: integer
+        description: Price
+        example: 820
+      extra_person_night_fee:
+        type: number
+        description: Extra person per night fee
+        example: 102.5
+      num_extra_people:
+        type: number
+        description: Extra people
+        example: 2.5
+      total_benchmark_tax_fees_percent:
+        type: number
+        description: Total Benchmark Tax Fees Percent
+        example: 23
+      tax_and_fees_breakdown:
+        type: array
+        description: Tax and Fees Breakdown
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Tax
+            percentage:
+              type: number
+              example: 11.5
+          required:
+            - name
+            - percentage
+      meal:
+        type: string
+        description: Type of meal
+        example: Room Only
+      bed:
+        type: string
+        description: Bed type
+        example: King
+      bookmarked:
+        type: boolean
+        description: Is package bookmarked by the current user?
+        example: false
+    required:
+      - id
+      - cancellable
+      - description
+      - price
+      - extra_person_night_fee
+      - num_extra_people
+      - total_benchmark_tax_fees_percent
+      - tax_and_fees_breakdown
+      - meal
+      - bed
+      - bookmarked
+  SearchContextRequest:
+    type: object
+    properties:
+      query_text:
+        type: string
+        example: Singapore
+      suggestion_id:
+        type: integer
+        example: 45083
+      checkin:
+        type: string
+        example: '2017-10-24'
+      checkout:
+        type: string
+        example: '2017-10-28'
+      occupancy:
+        type: array
+        items:
+          $ref: '#/definitions/SearchContextRoom'
+      amenity_codes:
+        type: string
+        description: 'Comma-separated list of required amenities. Current codes: swimmingpool, wifi, restaurant, ac, airporttransport, golf, gym, spasauna, sports.'
+        example: 'swimmingpool,golf,ac'
+      star_ratings:
+        type: string
+        description: Comma-separated list of allowed star ratings.
+        example: '1,3,4'
+      user_rating:
+        type: number
+        description: Minimum user rating.
+        example: '3.25'
+      neighborhood_suggestion_ids:
+        type: string
+        description: Comma-separated list of neighborhood suggestion ids
+        example: '71596, 71597'
+      sort_order:
+        type: string
+        description: 'Desired sort order, one of recommended, star-rating, user-rating, price, name-asc, and name-desc'
+        example: recommended
+    required:
+      - query_text
+      - checkin
+      - checkout
+      - occupancy
+  HotelListingItemDetail:
+    type: object
+    properties:
+      images:
+        type: array
+        items:
+          $ref: '#/definitions/HotelImage'
+      hotel_name:
+        type: string
+        example: Somerset Greenways Chennai
+      short_description:
+        type: string
+        example: Short description
+      long_description:
+        type: string
+        example: A Very Long Description Of The Hotel Facilities
+      star_rating:
+        type: number
+        example: '5.0'
+      user_rating:
+        type: number
+        example: '5.0'
+      city:
+        type: string
+        example: Chennai
+      country:
+        type: string
+        example: India
+      address:
+        type: string
+        example: Sathyadev Avenue Mrc Nagar Santhome 94
+      amenities:
+        type: array
+        items:
+          title: Amenity
+          type: object
+          properties:
+            code:
+              type: string
+              example: swimmingpool
+          required:
+            - code
+      map:
+        title: MapInfo
+        type: object
+        properties:
+          longitude:
+            type: number
+            example: 51.52249
+          latitude:
+            type: number
+            example: -0.08426
+          zoom:
+            type: number
+            example: 12
+          markers:
+            type: string
+            example: 'color:red|51.52249,-0.08426'
+          maptype:
+            type: string
+            example: roadmap
+          key:
+            type: string
+            example: AIzaSyCAGx341Pssess47o6AxJfX2gJpKNBBcs0
+          size:
+            type: string
+            example: 317x171
+          map_image_url:
+            type: string
+            example: 'https://maps.googleapis.com/maps/api/staticmap?zoom=12&size=317x171&maptype=roadmap&markers=color:red|51.52249,-0.08426&key=AIzaSyCAGx341Pssess47o6AxJfX2gJpKNBBcs0'
+        required:
+          - longitude
+          - latitude
+          - zoom
+          - markers
+          - maptype
+          - key
+          - size
+          - map_image_url
+      rating_info:
+        title: RatingInfo
+        type: object
+        description: Only present if there is a rating source for the hotel
+        properties:
+          rating_provider:
+            type: string
+            description: 'Rating provide code, one of ''blackbook'' and ''trustyou''.'
+            example: trustyou
+          summary_rating:
+            type: number
+            example: 4.5
+          review_count:
+            type: integer
+            example: 18257
+          hotel_url:
+            type: string
+            example: 'https://www.tripadvisor.com/Hotel_Review-xyz-abc.html'
+          ranking_string:
+            type: string
+            example: '#40 of 319 hotels in Singapore'
+          write_review_url:
+            type: string
+            example: 'https://www.tripadvisor.com/UserReview-xyz-abc.html'
+          category_ratings:
+            type: array
+            items:
+              title: CategoryRating
+              type: object
+              properties:
+                score:
+                  type: integer
+                  example: 90
+                label:
+                  type: string
+                  example: Breakfast
+                max_scale:
+                  type: integer
+                  example: 10
+              required:
+                - score
+                - label
+          star_ratings:
+            type: array
+            items:
+              title: StarRating
+              type: object
+              properties:
+                score:
+                  type: integer
+                  example: 5
+                count:
+                  type: integer
+                  example: 16327
+                label:
+                  type: string
+                  example: Excellent
+                max_scale:
+                  type: integer
+                  example: 5
+              required:
+                - score
+                - count
+                - label
+          trip_types:
+            type: array
+            items:
+              title: TripType
+              type: object
+              properties:
+                label:
+                  type: string
+                  example: Business
+                count:
+                  type: integer
+                  example: 1354
+              required:
+                - label
+                - count
+        required:
+          - rating_provider
+          - review_count
+          - category_ratings
+          - star_ratings
+          - trip_types
+    required:
+      - images
+      - hotel_name
+      - star_rating
+      - user_rating
+      - city
+      - country
+      - address
+      - amenities
+      - map
+      - rating_info
+  HotelImage:
+    type: object
+    properties:
+      url:
+        type: string
+        description: Image URL
+        example: 'https://hotels.net/images/full/19bfcdf5.jpg'
+    required:
+      - url
+  HotelSearchListingItemRoomPackageGroups:
+    type: object
+    properties:
+      room_package_groups:
+        type: array
+        description: 'This is present only if prices and availability have already been obtained from the suppliers. Otherwise, the caller needs to call the Get Room Packages API.'
+        items:
+          $ref: '#/definitions/RoomPackageGroup'
+  HotelSearchListingItemDetail:
+    allOf:
+      - $ref: '#/definitions/HotelListingItemDetail'
+      - $ref: '#/definitions/HotelSearchListingItemRoomPackageGroups'
+  BookmarkRoomPackages:
+    type: object
+    properties:
+      room_package_info:
+        type: array
+        items:
+          $ref: '#/definitions/RoomPackage'
+    required:
+      - room_package_info
+  BookmarkDetail:
+    allOf:
+      - $ref: '#/definitions/HotelListingItemDetail'
+      - $ref: '#/definitions/BookmarkRoomPackages'
+  SearchContextResponse:
+    type: object
+    properties:
+      uuid:
+        type: string
+        example: 94a269b6-76cc-48a0-884f-5b97afb61683
+      search_type:
+        type: string
+        enum:
+          - city
+          - country
+          - multi_keyword
+          - neighborhood
+          - partial_name
+          - single_hotel
+      hotels:
+        type: array
+        items:
+          $ref: '#/definitions/HotelSearchListingItem'
+      neighborhoods:
+        type: array
+        items:
+          $ref: '#/definitions/Neighborhood'
+      page_size:
+        type: integer
+        example: 50
+      map:
+        type: object
+        properties:
+          location:
+            type: object
+            properties:
+              longitude:
+                type: number
+                example: 51.52249
+              latitude:
+                type: number
+                example: -0.08426
+          viewport:
+            type: object
+            properties:
+              northeast:
+                type: object
+                properties:
+                  longitude:
+                    type: number
+                    example: 51.52249
+                  latitude:
+                    type: number
+                    example: -0.08426
+              southwest:
+                type: object
+                properties:
+                  longitude:
+                    type: number
+                    example: 51.52249
+                  latitude:
+                    type: number
+                    example: -0.08426
+          nightmode:
+            type: boolean
+            example: false
+    required:
+      - uuid
+      - hotels
+  SearchResultsPrices:
+    type: array
+    items:
+      type: object
+      properties:
+        hotel_id:
+          type: integer
+          example: 34973
+        fully_booked:
+          type: boolean
+          example: false
+        price:
+          type: number
+          description: Only present if not fully booked
+          example: 95
+        room_name:
+          type: string
+          description: Only present if not fully booked
+          example: Studio Premier
+      required:
+        - hotel_id
+        - fully_booked
+  Neighborhood:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 71597
+      name:
+        type: string
+        example: Orchard Road
+      hotel_count:
+        type: integer
+        example: 115
+      popular:
+        type: boolean
+        example: false
+      longitude:
+        type: number
+        example: 51.52249
+      latitude:
+        type: number
+        example: -0.08426
+    required:
+      - id
+      - name
+      - hotel_count
+      - popular
+  Device:
+    type: object
+    properties:
+      udid:
+        type: string
+        example: 002ebf12da12505ddffa739a67c3c5d20177f6a9
+      platform:
+        type: string
+        enum:
+          - iphone
+          - android
+      os_version:
+        type: string
+      app_version:
+        type: string
+      carrier:
+        type: string
+      name:
+        type: string
+      language:
+        type: string
+      rooted:
+        type: boolean
+      push_state:
+        type: string
+        enum:
+          - not_enabled
+          - not_registered
+          - registration_failed
+          - registered
+      push_id:
+        type: string
+      location:
+        type: string
+      timezone:
+        type: string
+basePath: /api/v1
+paths:
+  /prelogin:
+    post:
+      summary: Register a device visit for a Blackbook customer not yet signed in
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for device visit
+          schema:
+            $ref: '#/definitions/PreloginRequest'
+      responses:
+        '201':
+          description: The device visit was logged successfully
+          schema:
+            $ref: '#/definitions/PreloginResponse'
+        '422':
+          description: The device visit was not registered because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: invalid udid
+  /users:
+    post:
+      summary: Register a new user for a Blackbook customer and log the user in
+      description: |-
+        `country_of_residence` is geolocated from the source IP of this request.
+
+        If the user already exists and the password matches, the user is simply logged in, other parameters are ignored, and the user is not updated.
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for new user
+          schema:
+            $ref: '#/definitions/RegisterUserRequest'
+      responses:
+        '201':
+          description: The user was registered and logged in successfully
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '422':
+          description: The user was not registered because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: email already registered
+  /users/prebook:
+    post:
+      summary: Initiate booking process
+      security:
+        - Bearer: []
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for user pre-booking
+          schema:
+            $ref: '#/definitions/UserPrebookingRequest'
+      responses:
+        '201':
+          description: User prebooking was successful
+          schema:
+            $ref: '#/definitions/UserPrebookingResponse'
+        '422':
+          description: Prebooking was not completed because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: invalid udid
+  /users/sign_in:
+    post:
+      summary: Log in a user for a Blackbook customer
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: User credentials
+          schema:
+            $ref: '#/definitions/LoginRequest'
+      responses:
+        '201':
+          description: The user was logged in successfully
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '401':
+          description: The user was not authorized to log in
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: incorrect user or password
+  /prebook:
+    post:
+      summary: Initiate booking process
+      tags:
+        - Prebooking
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for pre-booking
+          schema:
+            $ref: '#/definitions/PrebookingRequest'
+      responses:
+        '201':
+          description: Prebooking was successful
+          schema:
+            $ref: '#/definitions/PrebookingResponse'
+        '422':
+          description: Prebooking was not completed because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: invalid udid
+  /profile:
+    get:
+      summary: Get user profile for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: last_bookmarks_update_at
+          in: query
+          description: Last bookmark synch time
+          type: string
+      responses:
+        '200':
+          description: The profile for the user was returned successfully
+          schema:
+            $ref: '#/definitions/UserProfileResponse'
+        '401':
+          description: User not logged in or session expired
+          schema:
+            type: object
+            title: ' '
+            properties:
+              error:
+                type: string
+                example: User not logged in or session expired
+    put:
+      summary: Update user profile for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for new user
+          schema:
+            $ref: '#/definitions/UserProfile'
+      responses:
+        '200':
+          description: The profile for the user was updated successfully
+          schema:
+            $ref: '#/definitions/UserProfileResponse'
+        '400':
+          description: Bad request format
+        '401':
+          description: User not logged in or session expired
+          schema:
+            type: object
+            title: ' '
+            properties:
+              error:
+                type: string
+                example: User not logged in or session expired
+        '422':
+          description: The user profile was not updated because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: street address cannot be blank
+  /profile/photo:
+    put:
+      summary: Update user profile photo for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - User management
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: photo
+          in: formData
+          required: true
+          type: file
+          description: User photo in PNG format
+      responses:
+        '200':
+          description: The profile photo for the user was updated successfully
+          schema:
+            $ref: '#/definitions/UserProfilePhotoUrl'
+        '400':
+          description: Bad request format
+        '401':
+          description: User not logged in or session expired
+          schema:
+            type: object
+            title: ' '
+            properties:
+              error:
+                type: string
+                example: User not logged in or session expired
+        '422':
+          description: The profile photo for the user was not updated because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: 'photo is too small, please upload a photo 72x72 or bigger'
+    delete:
+      summary: Delete user profile photo for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - User management
+      responses:
+        '204':
+          description: Photo was deleted correctly
+        '422':
+          description: The photo was not deleted because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: Photo could not be deleted because reasons
+  /bookmark:
+    get:
+      summary: Get bookmarks for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - Bookmark management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      deprecated: true
+      parameters: []
+      responses:
+        '200':
+          description: Bookmarks for a Blackbook customer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Bookmark'
+    post:
+      summary: Create bookmark for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - Bookmark management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for new bookmark
+          schema:
+            $ref: '#/definitions/CreateBookmarkRequest'
+      responses:
+        '200':
+          description: The bookmark was created successfully
+          schema:
+            $ref: '#/definitions/UserBookmarks'
+        '422':
+          description: The bookmark was not created because of an error
+          schema:
+            $ref: '#/definitions/UserBookmarksWithErrors'
+    delete:
+      summary: Delete bookmark for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - Bookmark management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data to identify bookmark to delete
+          schema:
+            $ref: '#/definitions/CreateBookmarkRequest'
+      responses:
+        '200':
+          description: The bookmark was deleted successfully
+          schema:
+            $ref: '#/definitions/UserBookmarks'
+  '/bookmarks/{hotel_id}/{room_package_id}':
+    get:
+      summary: Get bookmarks for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - Bookmark management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: hotel_id
+          in: path
+          description: Hotel ID
+          required: true
+          type: string
+        - name: room_package_id
+          in: path
+          description: Room package ID
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Bookmarks for a Blackbook customer
+          schema:
+            $ref: '#/definitions/BookmarkDetail'
+  /search_contexts:
+    post:
+      summary: Create search context for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - Search
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: Data for new search
+          schema:
+            $ref: '#/definitions/SearchContextRequest'
+      responses:
+        '200':
+          description: The search was done successfully
+          schema:
+            $ref: '#/definitions/SearchContextResponse'
+        '500':
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Error in search
+  '/search_contexts/{search_context_uuid}/result_pages/{page_number}':
+    get:
+      summary: Get hotels from a result page
+      security:
+        - Bearer: []
+      tags:
+        - Search
+      produces:
+        - application/json
+      parameters:
+        - name: search_context_uuid
+          in: path
+          description: Search context UUID
+          required: true
+          type: string
+        - name: page_number
+          in: path
+          description: 'Page number, starting at 0'
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Result page hotels returned
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/HotelSearchListingItem'
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Bad format for parameter page_number
+        '404':
+          description: Record not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Search context not found
+        '500':
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Error getting result page
+  '/search_contexts/{search_context_uuid}/hotel_prices/{page_number}':
+    get:
+      summary: Get hotel prices from a results page
+      security:
+        - Bearer: []
+      tags:
+        - Search
+      produces:
+        - application/json
+      parameters:
+        - name: search_context_uuid
+          in: path
+          description: Search context UUID
+          required: true
+          type: string
+        - name: page_number
+          in: path
+          description: 'Page number, starting at 0'
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Results page prices returned
+          schema:
+            $ref: '#/definitions/SearchResultsPrices'
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Bad format for parameter page_number
+        '404':
+          description: Record not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Search context not found
+        '500':
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Error getting hotel prices
+  '/search_contexts/{search_context_uuid}/hotels/{hotel_id}':
+    get:
+      summary: Get hotel details for a hotel search listing item
+      security:
+        - Bearer: []
+      tags:
+        - Search
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: search_context_uuid
+          in: path
+          description: Search context UUID
+          required: true
+          type: string
+        - name: hotel_id
+          in: path
+          description: Hotel ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Hotel details for this hotel and search context
+          schema:
+            $ref: '#/definitions/HotelSearchListingItemDetail'
+        '400':
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Bad format for parameter page_number
+        '404':
+          description: Record not found
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: string
+                example: Hotel not found
+        '500':
+          description: Internal Server Error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: string
+                example: Error getting hotel details
+  '/search_contexts/{search_context_uuid}/hotels/{hotel_id}/room_packages':
+    get:
+      summary: Get room packages for a Blackbook customer
+      security:
+        - Bearer: []
+      tags:
+        - Search
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: search_context_uuid
+          in: path
+          description: Search context UUID
+          required: true
+          type: string
+        - name: hotel_id
+          in: path
+          description: Hotel ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Room packages for this hotel and search context
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RoomPackageGroup'
+  /update_password:
+    post:
+      summary: Update user password
+      security:
+        - Bearer: []
+      tags:
+        - User management
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: New password
+          schema:
+            $ref: '#/definitions/UpdatePasswordRequest'
+      responses:
+        '204':
+          description: Password was updated correctly
+        '422':
+          description: The password was not changed because of an error
+          schema:
+            type: object
+            title: ' '
+            properties:
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: Password is too short (minimum is 6 characters)
+  /unknown-url:
+    get:
+      summary: Unrecognized URL
+      description: It actually works with any HTTP method.
+      tags:
+        - Unknown URL
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            title: ' '
+            properties:
+              error:
+                type: string
+                example: Unknown URL
+
